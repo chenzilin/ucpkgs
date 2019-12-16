@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if [ 1 != $# ]; then
+	echo "Usage: ucipk ***.ipk"
+	exit 1
+fi
+
+PACKAGE_BASE_NAME=$(basename $1 .ipk)
+DIR_NAME=$PACKAGE_BASE_NAME
+PACKAGE_NAME=$PACKAGE_BASE_NAME.ipk
+
+rm -rf $DIR_NAME
+mkdir $DIR_NAME
+cp $1 $DIR_NAME/
+
+cd $DIR_NAME
+ar x $PACKAGE_NAME
+rm $PACKAGE_NAME
+
+FILE_LIST=`ls`
+for filename in $FILE_LIST; do
+	if [[ -f $filename && $filename == *.tar.gz ]]; then
+		tar xzvfpa $filename
+		rm $filename
+	elif [[ -f $filename && $filename == *.tar.xz ]]; then
+		tar xvJf $filename
+		rm $filename
+	elif [[ -f $filename && $filename == *.tar.bz2 ]]; then
+		tar jxvf $filename
+		rm $filename
+	fi
+done

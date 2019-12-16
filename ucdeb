@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ 1 != $# ]; then
+	echo "Usage: ucdeb ***.deb"
+	exit 1
+fi
+
+PACKAGE_BASE_NAME=$(basename $1 .deb)
+DIR_NAME=$PACKAGE_BASE_NAME
+PACKAGE_NAME=$PACKAGE_BASE_NAME.deb
+
+rm -rf $DIR_NAME
+mkdir $DIR_NAME
+cp $1 $DIR_NAME/
+
+cd $DIR_NAME
+dpkg -x $PACKAGE_NAME ./
+rm $PACKAGE_NAME
+
